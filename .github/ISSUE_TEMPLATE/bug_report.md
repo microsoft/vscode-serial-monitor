@@ -22,7 +22,6 @@ Type: Bug Report
 - VS Code Version:
 - Serial Monitor Extension Version:
 - Target embedded device:
-- RTOS version:
 - Other extensions you installed (and if the issue persists after disabling them):
 - A clear and concise description of what the bug is.
 
