@@ -8,4 +8,4 @@ feature request as a new Issue.
 
 ## Microsoft Support Policy  
 
-Support for **Embedded Tools** is limited to the resources listed above.
+Support for **Serial Monitor** is limited to the resources listed above.
