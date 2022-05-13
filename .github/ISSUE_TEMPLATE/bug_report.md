@@ -38,8 +38,6 @@ Steps to reproduce the behavior:
 **Code sample and logs**
 - Code sample
 - `launch.json`
-- Logs from the Serial Monitor Output Window <!-- Please enable verbose logging by adding "vscode-embedded.loggingVerbosity": "debug" to your settings.json -->
-- Logs from the Debug Console <!--  Please enable logging by adding "logging": { "engineLogging": true, "trace": true, "traceResponse": true } to your launch.json. -->
 
 **Screenshots**
 <!-- If applicable, add screenshots to help explain your problem. -->
