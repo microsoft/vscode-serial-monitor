@@ -1,0 +1,29 @@
+name: Label and close stale issues
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/stale@v4.1.0
+      with:
+        days-before-stale: 30
+        days-before-close: 7
+        stale-issue-message: >-
+          This issue has been automatically marked as stale because it has been
+          inactive for 30 days. To reactivate the issue, simply post a comment
+          with the requested information to help us diagnose this issue. If this
+          issue remains inactive for another 7 days, it will be automatically
+          closed.
+        close-issue-message: >-
+          This issue has been automatically closed due to inactivity. If you are
+          still experiencing problems, please open a new issue.
+        stale-issue-label: stale
+        only-labels: needs-more-info
