@@ -66,4 +66,3 @@ export declare enum Version {
     latest = 0
 }
 export declare function getSerialMonitorApi(version: Version, extensionContext: vscode.ExtensionContext): Promise<SerialMonitorApi | undefined>;
-//# sourceMappingURL=api.d.ts.map

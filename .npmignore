@@ -1,0 +1,7 @@
+.github/**
+CODE_OF_CONDUCT.md
+SECURITY.md
+SUPPORT.md
+tsconfig.json
+.eslintrc.js
+api.ts

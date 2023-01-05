@@ -72,4 +72,3 @@ async function getSerialMonitorApi(version, extensionContext) {
     return extensionApi.getApi(version, extensionContext);
 }
 exports.getSerialMonitorApi = getSerialMonitorApi;
-//# sourceMappingURL=api.js.map
