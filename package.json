@@ -1,0 +1,45 @@
+{
+  "name": "vscode-serial-monitor-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Public API for vscode-serial-monitor",
+  "keywords": [
+    "vscode",
+    "serial",
+    "api",
+    "vscode-serial-monitor",
+    "monitor",
+    "serial monitor"
+  ],
+  "bugs": {
+    "url": "https://github.com/microsoft/vscode-serial-monitor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/vscode-serial-monitor"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Microsoft Corporation"
+  },
+  "publisher": "ms-vscode",
+  "main": "dist/api.js",
+  "typings": "dist/api.d.ts",
+  "scripts": {
+    "build": "tsc -p ./",
+    "build:dev": "tsc -p ./",
+    "clean": "rimraf ./dist",
+    "lint": "eslint . --ext ts --max-warnings 0",
+    "rebuild:dev": "pnpm run build:dev",
+    "test": ""
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.55.0",
+    "eslint": "^8.25.0",
+    "typescript": "^4.8.4"
+  },
+  "engines": {
+    "vscode": "^1.22.0"
+  }
+}

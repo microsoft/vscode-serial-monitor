@@ -1,0 +1,12 @@
+# Rush temporaries
+/common/temp/
+**/.rush/temp/
+/common/autoinstallers/**/.npmrc
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/*.map
+*.build.log
+*.build.error.log
