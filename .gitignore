@@ -1,8 +1,3 @@
-# Rush temporaries
-/common/temp/
-**/.rush/temp/
-/common/autoinstallers/**/.npmrc
-
 # Dependencies
 node_modules/
 
