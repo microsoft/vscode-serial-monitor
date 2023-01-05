@@ -8,15 +8,15 @@ on:
       - opened
 
 permissions:
-    pull-requests: write
+  pull-requests: write
 
 jobs:
   action:
     runs-on: ubuntu-latest
     steps:
-    - uses: dessant/repo-lockdown@v2
-      with:
-        github-token: ${{ github.token }}
-        process-only: prs
-        pr-comment: >-
-          This is an issues-only repository. **Public pull requests are not accepted.**
+      - uses: dessant/repo-lockdown@v2
+        with:
+          github-token: ${{ github.token }}
+          process-only: prs
+          pr-comment: >-
+            This is an issues-only repository. **Public pull requests are not accepted.**
