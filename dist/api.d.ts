@@ -17,7 +17,7 @@ export declare enum LineEnding {
     CR = "\r",
     CRLF = "\r\n"
 }
-export declare type DataBit = 5 | 6 | 7 | 8;
+export type DataBit = 5 | 6 | 7 | 8;
 export interface MonitorPortSettings {
     port: string;
     baudRate: number;
