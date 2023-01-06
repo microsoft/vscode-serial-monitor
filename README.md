@@ -2,6 +2,8 @@
 
 The Serial Monitor extension for Visual Studio Code provides a way to read from and write to serial ports.
 
+**This repository is used for tracking feedback and for exposing the public API. It contains no source code for the extension itself.**
+
 ## Public API for the ms-vscode.vscode-serial-monitor VS Code extension
 
 The purpose of this API is to allow for any extension to interact with Microsoft's Serial Monitor extension for VSCode.

@@ -4,4 +4,4 @@ SECURITY.md
 SUPPORT.md
 tsconfig.json
 .eslintrc.js
-api.ts
+*.ts

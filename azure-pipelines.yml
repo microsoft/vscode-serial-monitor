@@ -13,9 +13,8 @@ jobs:
   - job: BuildPublish
     displayName: Build and publish
     pool:
-      name: VSEngSS-MicroBuild2019-1ES
+      name: VSEngSS-MicroBuild2022-1ES
     steps:
-      - checkout: none
       - task: UseNode@1
         displayName: Use Node 16.18
         inputs:

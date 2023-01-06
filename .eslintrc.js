@@ -16,7 +16,7 @@ module.exports = {
     "header/header": [
       "warn",
       "line",
-      [" Copyright (c) Microsoft Corporation."],
+        [" Copyright (c) Microsoft Corporation.", " Licensed under the MIT License."],
     ],
     "no-unused-expressions": ["warn", { allowShortCircuit: true }],
   },
