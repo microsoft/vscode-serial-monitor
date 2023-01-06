@@ -11,7 +11,7 @@ The purpose of this API is to allow for any extension to interact with Microsoft
 When your extension activates, you can use the following code to get access to the API:
 
 ```Typescript
-    import {SerialMonitorApi, Version, getSerialMonitorApi, LineEnding, Parity, StopBits, Port} from 'vscode-serial-monitor';
+    import {SerialMonitorApi, Version, getSerialMonitorApi, LineEnding, Parity, StopBits, Port} from '@microsoft/vscode-serial-monitor-api';
  
     let api: SerialMonitorApi|undefined = await getSerialMonitorApi(Version.latest);
     if (api) {
