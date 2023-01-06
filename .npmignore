@@ -5,3 +5,4 @@ SUPPORT.md
 tsconfig.json
 .eslintrc.js
 *.ts
+azure-pipelines.yml
