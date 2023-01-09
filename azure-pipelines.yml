@@ -33,6 +33,9 @@ jobs:
     displayName: Build and publish
     pool:
       name: VSEngSS-MicroBuild2022-1ES
+    variables:
+      # MicroBuild requires TeamName to be set.
+      TeamName: C++ Cross Platform and Cloud
     steps:
       - task: MicroBuildSigningPlugin@3
         displayName: Install MicroBuild Signing
@@ -58,7 +61,10 @@ jobs:
         inputs:
           solution: .\build\SignFiles.proj
           msbuildArguments: /p:SignType=$(SignType)
-      # add a step to publish a debugging artifact to ado. 
+      - script: mkdir output && npm pack --pack-directory output
+        displayName: Package npm package
+      - publish: ${Build.StagingDirectory}\output
+        artifact: *.tgz
       - script: npm publish
         displayName: Publish to npm
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
