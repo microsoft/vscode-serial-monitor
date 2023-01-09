@@ -1,0 +1,28 @@
+# Copyright (c) Microsoft Corporation.
+name: $(Date:yyyyMMdd)$(Rev:.r).0-$(SourceBranchName)
+
+pr:
+  - main
+
+trigger:
+  branches:
+    include:
+      - main
+
+jobs:
+  - job: BuildPublish
+    displayName: Build and publish
+    pool:
+      name: VSEngSS-MicroBuild2022-1ES
+    steps:
+      - task: UseNode@1
+        displayName: Use Node 16.18
+        inputs:
+          version: "16.18"
+      - script: npm ci
+      - script: npm run build
+      - script: npm publish
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+        env:
+          NODE_AUTH_TOKEN: $(NPM_TOKEN)
+      
