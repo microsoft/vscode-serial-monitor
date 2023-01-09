@@ -61,11 +61,15 @@ jobs:
         inputs:
           solution: .\build\SignFiles.proj
           msbuildArguments: /p:SignType=$(SignType)
-      - script: mkdir output && npm pack --pack-directory output
+      - task: MicroBuildCodesignVerify@3
+        displayName: Verify signed files
+        inputs:
+          TargetFolders: dist
+      - script: mkdir output && npm pack --pack-destination output
         displayName: Package npm package
-      - publish: ${Build.StagingDirectory}\output
+      - publish: output
         artifact: npm-package
-      - script: npm publish
+      - pwsh: npm publish "$(gci -fi output\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         env:
