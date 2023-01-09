@@ -1,6 +1,16 @@
 # Copyright (c) Microsoft Corporation.
 name: $(Date:yyyyMMdd)$(Rev:.r).0-$(SourceBranchName)
 
+parameters:
+  - name: SignTypeOverride
+    displayName: Signing Type Override
+    type: string
+    default: default
+    values:
+      - default
+      - test
+      - real
+
 pr:
   - main
 
@@ -9,20 +19,51 @@ trigger:
     include:
       - main
 
+variables:
+  # If the user didn't override the signing type, then only real-sign on main.
+  ${{ if ne(parameters.SignTypeOverride, 'default') }}:
+    SignType: ${{ parameters.SignTypeOverride }}
+  ${{ if and(eq(parameters.SignTypeOverride, 'default'), or(startsWith(variables['Build.SourceBranch'], 'refs/tags'), eq(variables['Build.SourceBranchName'], 'main'))) }}:
+    SignType: real
+  ${{ if and(eq(parameters.SignTypeOverride, 'default'), not(or(startsWith(variables['Build.SourceBranch'], 'refs/tags'), eq(variables['Build.SourceBranchName'], 'main')))) }}:
+    SignType: test
+
 jobs:
   - job: BuildPublish
     displayName: Build and publish
     pool:
       name: VSEngSS-MicroBuild2022-1ES
     steps:
+      - task: MicroBuildSigningPlugin@3
+        displayName: Install MicroBuild Signing
+        inputs:
+          signType: $(SignType)
+          zipSources: false
+      - task: NuGetToolInstaller@1
+        displayName: Install NuGet
+      - task: NuGetAuthenticate@0
+        displayName: Authenticate NuGet
+      - script: nuget restore .\build\SignFiles.proj -PackagesDirectory .\build\packages
+        displayName: Restore MicroBuild Core
       - task: UseNode@1
         displayName: Use Node 16.18
         inputs:
           version: "16.18"
       - script: npm ci
+        displayName: Install dependencies
       - script: npm run build
+        displayName: Build code
+      - task: MSBuild@1
+        displayName: Sign files
+        inputs:
+          solution: .\build\SignFiles.proj
+          msbuildArguments: /p:SignType=$(SignType)
+      # add a step to publish a debugging artifact to ado. 
       - script: npm publish
+        displayName: Publish to npm
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         env:
           NODE_AUTH_TOKEN: $(NPM_TOKEN)
+      - task: MicroBuildCleanup@1
+        displayName: Clean up MicroBuild
       
