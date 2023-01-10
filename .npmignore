@@ -8,3 +8,5 @@ tsconfig.json
 !*.d.ts
 azure-pipelines.yml
 build/**
+getCurrentPackageJsonVersion.js
+jobs/**

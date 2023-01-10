@@ -29,51 +29,44 @@ variables:
     SignType: test
 
 jobs:
-  - job: BuildPublish
-    displayName: Build and publish
+  - template: jobs/shared/build.yml
+  - job: GetNpmPackageVersions
+    dependsOn: Build
+    displayName: Extract npm package versions into variables
+    steps:
+      - script: echo "##vso[task.setvariable variable=CurrentVersion;isoutput=true]$(npm view @microsoft/vscode-serial-monitor-api version)"
+        name: currentVersionCheck
+      - script: echo "##vso[task.setvariable variable=NewVersion;isoutput=true]$(node getCurrentPackageJsonVersion.js)"
+        name: newVersionCheck
+  - job: WaitForNPMPublishValidation
+    displayName: Wait for publishing npm package validation
+    dependsOn: [GetNpmPackageVersions, Build]
+    pool: server
+    variables: 
+      currentVersion: $(dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion'])
+      newVersion: $(dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion'])
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(currentVersion, newVersion))
+    steps:
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: embeddeddev@microsoft.com
+          instructions: "Please validate the vscode-serial-monitor-api npm package release. After validation, resume the pipeline."
+  - job: Publish
+    displayName: Publish the npm package
+    dependsOn: [WaitForNPMPublishValidation, GetNpmPackageVersions]
     pool:
       name: VSEngSS-MicroBuild2022-1ES
     variables:
       # MicroBuild requires TeamName to be set.
       TeamName: C++ Cross Platform and Cloud
+      currentVersion: $(dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion'])
+      newVersion: $(dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion'])
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(currentVersion, newVersion))
     steps:
-      - task: MicroBuildSigningPlugin@3
-        displayName: Install MicroBuild Signing
-        inputs:
-          signType: $(SignType)
-          zipSources: false
-      - task: NuGetToolInstaller@1
-        displayName: Install NuGet
-      - task: NuGetAuthenticate@0
-        displayName: Authenticate NuGet
-      - script: nuget restore .\build\SignFiles.proj -PackagesDirectory .\build\packages
-        displayName: Restore MicroBuild Core
-      - task: UseNode@1
-        displayName: Use Node 16.18
-        inputs:
-          version: "16.18"
-      - script: npm ci
-        displayName: Install dependencies
-      - script: npm run build
-        displayName: Build code
-      - task: MSBuild@1
-        displayName: Sign files
-        inputs:
-          solution: .\build\SignFiles.proj
-          msbuildArguments: /p:SignType=$(SignType)
-      - task: MicroBuildCodesignVerify@3
-        displayName: Verify signed files
-        inputs:
-          TargetFolders: $(Build.SourcesDirectory)\dist
-      - script: mkdir output && npm pack --pack-destination output
-        displayName: Package npm package
-      - publish: .\output
+      - download: current
         artifact: npm-package
-      - pwsh: npm publish "$(gci -fi output\*.tgz | select -expand FullName -f 1)"
+      - template: jobs/shared/install-node.yml
+      - pwsh: npm publish "$(gci -fi npm-package\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
-        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         env:
           NODE_AUTH_TOKEN: $(NPM_TOKEN)
-      - task: MicroBuildCleanup@1
-        displayName: Clean up MicroBuild
-      

@@ -1,0 +1,39 @@
+# Copyright (c) Microsoft Corporation.
+
+jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      name: VSEngSS-MicroBuild2022-1ES
+    variables:
+      # MicroBuild requires TeamName to be set.
+      TeamName: C++ Cross Platform and Cloud
+    steps:
+      - task: MicroBuildSigningPlugin@3
+        displayName: Install MicroBuild Signing
+        inputs:
+          signType: $(SignType)
+          zipSources: false
+      - template: install-nuget.yml
+      - script: nuget restore .\build\SignFiles.proj -PackagesDirectory .\build\packages
+        displayName: Restore MicroBuild Core
+      - template: install-node.yml
+      - script: npm ci
+        displayName: Install dependencies
+      - script: npm run build
+        displayName: Build code
+      - task: MSBuild@1
+        displayName: Sign files
+        inputs:
+          solution: .\build\SignFiles.proj
+          msbuildArguments: /p:SignType=$(SignType)
+      - task: MicroBuildCodesignVerify@3
+        displayName: Verify signed files
+        inputs:
+          TargetFolders: $(Build.SourcesDirectory)\dist
+      - script: mkdir output && npm pack --pack-destination output
+        displayName: Package npm package
+      - publish: .\output
+        artifact: npm-package
+      - task: MicroBuildCleanup@1
+        displayName: Clean up MicroBuild
