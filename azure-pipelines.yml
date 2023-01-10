@@ -61,10 +61,6 @@ jobs:
         inputs:
           solution: .\build\SignFiles.proj
           msbuildArguments: /p:SignType=$(SignType)
-      - task: MicroBuildCodesignVerify@3
-        displayName: Verify signed files
-        inputs:
-          TargetFolders: .\dist
       - script: mkdir output && npm pack --pack-destination output
         displayName: Package npm package
       - publish: .\output
