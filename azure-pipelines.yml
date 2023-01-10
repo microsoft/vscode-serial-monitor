@@ -67,8 +67,8 @@ jobs:
         artifact: npm-package
       - template: jobs/shared/install-node.yml
       - script: |
-          git tag v$(variables['newVersion'])
-          git push origin v$(variables['newVersion'])
+          git tag v$(newVersion)
+          git push origin v$(newVersion)
       - pwsh: npm publish "$(gci -fi npm-package\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
         env:
