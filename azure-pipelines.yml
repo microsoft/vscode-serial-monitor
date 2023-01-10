@@ -63,6 +63,8 @@ jobs:
       newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
     condition: succeeded()
     steps:
+      - checkout: self
+        persistCredentials: "true"
       - download: current
         artifact: npm-package
       - template: jobs/shared/install-node.yml
