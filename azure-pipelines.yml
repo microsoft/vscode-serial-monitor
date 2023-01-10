@@ -64,7 +64,7 @@ jobs:
       - task: MicroBuildCodesignVerify@3
         displayName: Verify signed files
         inputs:
-          TargetFolders: dist
+          TargetFolders: ${Build.SourcesDirectory}\dist
       - script: mkdir output && npm pack --pack-destination output
         displayName: Package npm package
       - publish: output
