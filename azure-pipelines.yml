@@ -71,7 +71,7 @@ jobs:
       - script: |
           git tag v$(newVersion)
           git push origin v$(newVersion)
-      - pwsh: npm publish "$(gci -fi npm-package\*.tgz | select -expand FullName -f 1)"
+      - pwsh: npm publish "$(gci -fi $(Pipeline.Workspace)\npm-package\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
         env:
           NODE_AUTH_TOKEN: $(NPM_TOKEN)
