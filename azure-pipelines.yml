@@ -43,8 +43,8 @@ jobs:
     dependsOn: [GetNpmPackageVersions, Build]
     pool: server
     variables: 
-      currentVersion: $(dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion'])
-      newVersion: $(dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion'])
+      currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
+      newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
     condition: and(succeeded(), eq(variables['currentVersion'], variables['newVersion']))
     steps:
       - task: ManualValidation@0
@@ -59,8 +59,8 @@ jobs:
     variables:
       # MicroBuild requires TeamName to be set.
       TeamName: C++ Cross Platform and Cloud
-      currentVersion: $(dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion'])
-      newVersion: $(dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion'])
+      currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
+      newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
     condition: and(succeeded(), eq(variables['currentVersion'], variables['newVersion']))
     steps:
       - download: current
