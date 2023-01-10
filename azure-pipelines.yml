@@ -45,7 +45,7 @@ jobs:
     variables: 
       currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
       newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
-    condition: and(succeeded())
+    condition: succeeded()
     steps:
       - task: ManualValidation@0
         inputs:
@@ -61,7 +61,7 @@ jobs:
       TeamName: C++ Cross Platform and Cloud
       currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
       newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
-    condition: and(succeeded())
+    condition: succeeded()
     steps:
       - download: current
         artifact: npm-package
