@@ -71,7 +71,6 @@ jobs:
         artifact: npm-package
       - pwsh: npm publish "$(gci -fi output\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
-        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         env:
           NODE_AUTH_TOKEN: $(NPM_TOKEN)
       - task: MicroBuildCleanup@1
