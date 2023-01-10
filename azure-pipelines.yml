@@ -45,7 +45,7 @@ jobs:
     variables: 
       currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
       newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
-    condition: and(succeeded(), gt(variables['newVersion'], variables['currentVersion']))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), gt(variables['newVersion'], variables['currentVersion']))
     steps:
       - task: ManualValidation@0
         inputs:
@@ -61,11 +61,14 @@ jobs:
       TeamName: C++ Cross Platform and Cloud
       currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
       newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
-    condition: and(succeeded(), gt(variables['newVersion'], variables['currentVersion']))
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), gt(variables['newVersion'], variables['currentVersion']))
     steps:
       - download: current
         artifact: npm-package
       - template: jobs/shared/install-node.yml
+      - script: |
+          git tag v$(variables['newVersion'])
+          git push origin v$(variables['newVersion'])
       - pwsh: npm publish "$(gci -fi npm-package\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
         env:
