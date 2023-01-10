@@ -64,10 +64,10 @@ jobs:
       - task: MicroBuildCodesignVerify@3
         displayName: Verify signed files
         inputs:
-          TargetFolders: ${Build.SourcesDirectory}\dist
+          TargetFolders: .\dist
       - script: mkdir output && npm pack --pack-destination output
         displayName: Package npm package
-      - publish: output
+      - publish: .\output
         artifact: npm-package
       - pwsh: npm publish "$(gci -fi output\*.tgz | select -expand FullName -f 1)"
         displayName: Publish to npm
