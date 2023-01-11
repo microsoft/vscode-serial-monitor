@@ -1,0 +1,7 @@
+# Copyright (c) Microsoft Corporation.
+
+steps:
+  - task: NuGetToolInstaller@1
+    displayName: Install NuGet
+  - task: NuGetAuthenticate@0
+    displayName: Authenticate NuGet

@@ -1,0 +1,7 @@
+# Copyright (c) Microsoft Corporation.
+
+steps:
+  - task: UseNode@1
+    displayName: Use Node 16.18
+    inputs:
+      version: "16.18"

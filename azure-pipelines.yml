@@ -1,6 +1,16 @@
 # Copyright (c) Microsoft Corporation.
 name: $(Date:yyyyMMdd)$(Rev:.r).0-$(SourceBranchName)
 
+parameters:
+  - name: SignTypeOverride
+    displayName: Signing Type Override
+    type: string
+    default: default
+    values:
+      - default
+      - test
+      - real
+
 pr:
   - main
 
@@ -9,20 +19,59 @@ trigger:
     include:
       - main
 
+variables:
+  # If the user didn't override the signing type, then only real-sign on main.
+  ${{ if ne(parameters.SignTypeOverride, 'default') }}:
+    SignType: ${{ parameters.SignTypeOverride }}
+  ${{ if and(eq(parameters.SignTypeOverride, 'default'), or(startsWith(variables['Build.SourceBranch'], 'refs/tags'), eq(variables['Build.SourceBranchName'], 'main'))) }}:
+    SignType: real
+  ${{ if and(eq(parameters.SignTypeOverride, 'default'), not(or(startsWith(variables['Build.SourceBranch'], 'refs/tags'), eq(variables['Build.SourceBranchName'], 'main')))) }}:
+    SignType: test
+
 jobs:
-  - job: BuildPublish
-    displayName: Build and publish
-    pool:
-      name: VSEngSS-MicroBuild2022-1ES
+  - template: jobs/shared/build.yml
+  - job: GetNpmPackageVersions
+    dependsOn: Build
+    displayName: Extract npm package versions into variables
     steps:
-      - task: UseNode@1
-        displayName: Use Node 16.18
+      - script: echo "##vso[task.setvariable variable=CurrentVersion;isoutput=true]$(npm view @microsoft/vscode-serial-monitor-api version)"
+        name: currentVersionCheck
+      - script: echo "##vso[task.setvariable variable=NewVersion;isoutput=true]$(node getCurrentPackageJsonVersion.js)"
+        name: newVersionCheck
+  - job: WaitForNPMPublishValidation
+    displayName: Wait for publishing npm package validation
+    dependsOn: [GetNpmPackageVersions, Build]
+    pool: server
+    variables: 
+      currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
+      newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), gt(variables['newVersion'], variables['currentVersion']))
+    steps:
+      - task: ManualValidation@0
         inputs:
-          version: "16.18"
-      - script: npm ci
-      - script: npm run build
-      - script: npm publish
-        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+          notifyUsers: embeddeddev@microsoft.com
+          instructions: "Please validate the vscode-serial-monitor-api npm package release. After validation, resume the pipeline."
+  - job: Publish
+    displayName: Publish the npm package
+    dependsOn: [WaitForNPMPublishValidation, GetNpmPackageVersions]
+    pool:
+      name: AzurePipelines-EO
+    variables:
+      TeamName: C++ Cross Platform and Cloud
+      currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
+      newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), gt(variables['newVersion'], variables['currentVersion']))
+    steps:
+      - checkout: self
+        persistCredentials: "true"
+      - download: current
+        artifact: npm-package
+      - template: jobs/shared/install-node.yml
+      - script: |
+          git tag v$(newVersion)
+          git push origin v$(newVersion)
+        displayName: Push version tag to git
+      - pwsh: npm publish "$(gci -fi $(Pipeline.Workspace)/npm-package/*.tgz | select -expand FullName -f 1)"
+        displayName: Publish to npm
         env:
           NODE_AUTH_TOKEN: $(NPM_TOKEN)
-      
