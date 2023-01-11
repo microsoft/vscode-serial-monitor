@@ -57,7 +57,6 @@ jobs:
     pool:
       name: VSEngSS-MicroBuild2022-1ES
     variables:
-      # MicroBuild requires TeamName to be set.
       TeamName: C++ Cross Platform and Cloud
       currentVersion: $[dependencies.GetNpmPackageVersions.outputs['currentVersionCheck.CurrentVersion']]
       newVersion: $[dependencies.GetNpmPackageVersions.outputs['newVersionCheck.NewVersion']]
