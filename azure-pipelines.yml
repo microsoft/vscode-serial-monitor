@@ -71,7 +71,7 @@ jobs:
           git tag v$(newVersion)
           git push origin v$(newVersion)
         displayName: Push version tag to git
-      - pwsh: npm publish "$(gci -fi $(Pipeline.Workspace)/npm-package/*.tgz | select -expand FullName -f 1)"
+      - pwsh: cd $(Pipeline.Workspace)/npm-package && npm publish microsoft-vscode-serial-monitor-api-*.*.*.tgz
         displayName: Publish to npm
         env:
           NODE_AUTH_TOKEN: $(NPM_TOKEN)
