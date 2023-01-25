@@ -62,8 +62,9 @@ export interface SerialMonitorApi extends vscode.Disposable {
    *
    * This will search for the window that is actively monitoring the requested port, if it's present, and stop the monitoring.
    * @param portName The port name to stop monitoring.
+   * @returns True if a `portName` was being monitored and was stopped. Otherwise, returns false.
    */
-  stopMonitoringPort(portName: string): Promise<void>;
+  stopMonitoringPort(portName: string): Promise<boolean>;
 
   /**
    * Clear the output of all of the serial monitor webviews.
