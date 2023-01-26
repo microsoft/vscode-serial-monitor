@@ -46,7 +46,27 @@ export interface Port {
   onClosed: vscode.Event<void>;
 }
 
+export interface PortInformation {
+  /**
+   * Name of the port. i.e. `COM3`
+   */
+  portName: string;
+  friendlyName?: string;
+  /**
+   * Vendor identifier made of 4 hex characters.
+   */
+  vid?: string;
+  /**
+   * Product identifier made of 4 hex characters.
+   */
+  pid?: string;
+}
+
 export interface SerialMonitorApi extends vscode.Disposable {
+  /**
+   * List the available ports on the system.
+   */
+  listAvailablePorts(): Promise<PortInformation[]>;
   /**
    * Start monitoring a specific port with specific settings.
    *
