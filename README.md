@@ -13,9 +13,9 @@ When your extension activates, you can use the following code to get access to t
 ```Typescript
     import {SerialMonitorApi, Version, getSerialMonitorApi, LineEnding, Parity, StopBits, Port} from '@microsoft/vscode-serial-monitor-api';
  
-    let api: SerialMonitorApi|undefined = await getSerialMonitorApi(Version.latest);
+    let api: SerialMonitorApi|undefined = await getSerialMonitorApi(Version.latest, extensionContext);
     if (api) {
-        const port: Port = api.startMonitoringPort({port: "COM1", baudRate: 115200, lineEnding: LineEnding.None, dataBits: 8, stopBits: StopBits.One, parity: Parity.None});
+        const port: Port = await api.startMonitoringPort({port: "COM1", baudRate: 115200, lineEnding: LineEnding.None, dataBits: 8, stopBits: StopBits.One, parity: Parity.None});
         port.onClosed(() => console.log("My port was closed"));
     }
     // Dispose of the 'api' in your extension's deactivate() method.
