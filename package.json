@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/vscode-serial-monitor-api",
-  "version": "0.1.6",
+  "version": "1.0.0",
   "description": "Public API for vscode-serial-monitor",
   "keywords": [
     "vscode",
