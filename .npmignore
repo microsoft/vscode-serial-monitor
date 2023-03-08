@@ -10,3 +10,4 @@ azure-pipelines.yml
 build/**
 getCurrentPackageJsonVersion.js
 jobs/**
+assets/**
