@@ -35,6 +35,12 @@ export interface MonitorPortSettings {
   parity: Parity;
 }
 
+export interface MonitorTCPConnectionSettings {
+  host: string;
+  port: number;
+  swoEnabled: boolean;
+}
+
 export interface Port {
   /**
    * Stop monitoring this port.
@@ -64,9 +70,10 @@ export interface PortInformation {
 
 export interface SerialMonitorApi extends vscode.Disposable {
   /**
-   * List the available ports on the system.
+   * List the available serial ports on the system.
    */
   listAvailablePorts(): Promise<PortInformation[]>;
+  
   /**
    * Start monitoring a specific port with specific settings.
    *
@@ -85,6 +92,27 @@ export interface SerialMonitorApi extends vscode.Disposable {
    * @returns True if a `portName` was being monitored and was stopped. Otherwise, returns false.
    */
   stopMonitoringPort(portName: string): Promise<boolean>;
+
+  /**
+   * Start monitoring a specifc TCP connection based on host and port. 
+   * 
+   * Also supports the enablement of "Serial Wire Output" mode.
+   * This will, on a non-active window, either already present, or by creating a new one (if possible), start monitoring with the requested settings.
+   * @param connectionSettings  The connection settings to pass to the serial monitor webview.
+   * @returns A promise of a Port, which will contain an object that allows the consumer to stop monitoring that port, or to listen for when it is closed.
+   * @throws An exception if there is a problem opening the connection.
+   */
+  startMonitoringTCPConnection(connectionSettings: MonitorTCPConnectionSettings): Promise<Port>;
+
+  /**
+   * Stop monitoring a specific connection.
+   * 
+   * This will search for a window that is actively monitoring the requested host and port, if it's present, and stop the monitoring.
+   * @param host The host name to look for to stop monitoring.
+   * @param port The port number to look for to stop monitoring.
+   * @returns True if the `host` and `port` was being monitored and was stopped. Otherwise, returns false.
+   */
+  stopMonitoringTCPConnection(host: string, port: number): Promise<boolean>;
 
   /**
    * Clear the output of all of the serial monitor webviews.
