@@ -15,8 +15,12 @@ When your extension activates, you can use the following code to get access to t
  
     let api: SerialMonitorApi|undefined = await getSerialMonitorApi(Version.latest, extensionContext);
     if (api) {
+        // open a serial port
         const port: Port = await api.startMonitoringPort({port: "COM1", baudRate: 115200, lineEnding: LineEnding.None, dataBits: 8, stopBits: StopBits.One, parity: Parity.None});
         port.onClosed(() => console.log("My port was closed"));
+
+        const tcpConnection: Port = await api.startMonitoringTCPConnection({host: "localhost", port: 1234, swoEnabled: false});
+        port.onClosed(() => console.log("My tcp port was closed"));
     }
     // Dispose of the 'api' in your extension's deactivate() method.
 ```
