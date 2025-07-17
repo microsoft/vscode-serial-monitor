@@ -2,9 +2,7 @@
 
 ## How to file issues and get help  
 
-This project uses [GitHub Issues](https://github.com/microsoft/vscode-serial-monitor/issues/new/choose) to track bugs and feature requests. Please search the existing 
-issues before filing new issues to avoid duplicates.  For new issues, file your bug or 
-feature request as a new Issue.
+We appreciate any feedback you have to help improve this extension. Starting from July 2025, to submit feedback, please go to [Visual Studio Developer Community](https://developercommunity.visualstudio.com/cpp).
 
 ## Microsoft Support Policy  
 

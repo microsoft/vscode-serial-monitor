@@ -27,9 +27,7 @@ When your extension activates, you can use the following code to get access to t
 
 ## Feedback
 
-We appreciate any feedback you have to help improve this extension. To submit feedback, please [create an issue](https://github.com/microsoft/vscode-serial-monitor/issues/new/choose).
-
-*Note: this repository is for feedback on the VS Code extension. To provide feedback on Serial Monitor in Visual Studio 2022, please go to [Visual Studio Developer Community](https://developercommunity.visualstudio.com/home).*
+We appreciate any feedback you have to help improve this extension. Starting from July 2025, to submit feedback, please go to [Visual Studio Developer Community](https://developercommunity.visualstudio.com/cpp).
 
 ## Trademarks
 
