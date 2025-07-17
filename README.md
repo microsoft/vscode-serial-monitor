@@ -25,6 +25,13 @@ When your extension activates, you can use the following code to get access to t
     // Dispose of the 'api' in your extension's deactivate() method.
 ```
 
+## Frequently asked questions
+
+> I want to set the baud rate to the custom value (like 921600), but I haven't found any options.
+
+This currently can be accomplished by using the `vscode-serial-monitor.customBaudRates` setting.
+
+
 ## Feedback
 
 We appreciate any feedback you have to help improve this extension. Starting from July 2025, to submit feedback, please go to [Visual Studio Developer Community](https://developercommunity.visualstudio.com/cpp).
